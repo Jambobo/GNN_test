@@ -55,5 +55,8 @@ draw(G)
 
 node_connected = nx.all_pairs_node_connectivity(G)
 
+path = nx.shortest_path(G, 4, 2)
+
 print(node_connected)
+print(path)
 

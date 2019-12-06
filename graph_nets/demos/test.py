@@ -46,11 +46,16 @@ def draw(g):                   #显示图
 
 G = nx.DiGraph()
 
-G.add_path([1,2,3,4,5,6])
+# G.add_path([1,2,3,4,5,6])
+
+G.add_edges_from([(1, 2), (3, 1), (4, 3), (4, 5), (5, 2)])
 
 draw(G)
 
 node_connected = nx.all_pairs_node_connectivity(G)
 
+path = nx.shortest_path(G, 4, 2)
+
 print(node_connected)
+print(path)
 

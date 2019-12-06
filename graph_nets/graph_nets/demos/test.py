@@ -1,7 +1,7 @@
 #-*-coding:utf-8-*-
 
 import numpy as np
-import graph_nets.demos.graph_utils as gu
+import ../../graph_nets.demos.graph_utils as gu
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -46,7 +46,10 @@ def draw(g):                   #显示图
 
 G = nx.DiGraph()
 
-G.add_path([1,2,3,4,5,6])
+# G.add_path([1,2,3,4,5,6])
+
+G.add_edges_from([(1, 2), (3, 1),(5,3),(2,3),(3,5),(4,2)])
+
 
 draw(G)
 

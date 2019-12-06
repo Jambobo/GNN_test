@@ -1,7 +1,7 @@
 #-*-coding:utf-8-*-
 
 import numpy as np
-import ../../graph_nets.demos.graph_utils as gu
+import graph_nets.demos.graph_utils as gu
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -48,15 +48,16 @@ G = nx.DiGraph()
 
 # G.add_path([1,2,3,4,5,6])
 
-G.add_edges_from([(1, 2), (3, 1),(5,3),(2,3),(3,5),(4,2)])
+G.add_edges_from([(1, 2), (1, 5), (3, 1), (5, 2), (2, 3), (4, 2)])
 
 
 draw(G)
 
 node_connected = nx.all_pairs_node_connectivity(G)
 
-path = nx.shortest_path(G, 4, 2)
+path = nx.all_simple_paths(G, 1, 4)
 
 print(node_connected)
-print(path)
+print(len(list(path)))
+print(list(path))
 

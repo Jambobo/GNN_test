@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d5baaec4-7434-40b0-8de9-e0adf512eb18" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/graph_nets/demos/Reachability.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/graph_nets/demos/graph_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/graph_nets/demos/graph_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/graph_nets/demos/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/graph_nets/demos/test.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -14,6 +16,13 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/GNN_test$test.coverage" NAME="test Coverage Results" MODIFIED="1575610812478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/graph_net/demos" />
     <SUITE FILE_PATH="coverage/GNN_test$test__1_.coverage" NAME="test (1) Coverage Results" MODIFIED="1575612841067" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/graph_nets/demos" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -38,7 +47,51 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.test (1)">
+  <component name="RunManager" selected="Python.Reachability">
+    <configuration name="Reachability" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="GNN_test" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/graph_nets/demos" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/graph_nets/demos/Reachability.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="graph_utils" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="GNN_test" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/graph_nets/demos" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/graph_nets/demos/graph_utils.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="GNN_test" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -85,7 +138,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Reachability" />
         <item itemvalue="Python.test (1)" />
+        <item itemvalue="Python.graph_utils" />
         <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
@@ -101,7 +156,7 @@
       <option name="presentableId" value="Default" />
       <updated>1575610701753</updated>
       <workItem from="1575610703206" duration="1166000" />
-      <workItem from="1575639494202" duration="417000" />
+      <workItem from="1575639494202" duration="33554000" />
     </task>
     <servers />
   </component>
@@ -120,7 +175,9 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/GNN_test$test__1_.coverage" NAME="test (1) Coverage Results" MODIFIED="1575639913668" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/graph_nets/demos" />
+    <SUITE FILE_PATH="coverage/GNN_test$test__1_.coverage" NAME="test (1) Coverage Results" MODIFIED="1575792808081" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/graph_nets/demos" />
+    <SUITE FILE_PATH="coverage/GNN_test$Reachability.coverage" NAME="Reachability Coverage Results" MODIFIED="1575807235288" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/graph_nets/demos" />
+    <SUITE FILE_PATH="coverage/GNN_test$graph_utils.coverage" NAME="graph_utils Coverage Results" MODIFIED="1575726881738" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/graph_nets/demos" />
   </component>
   <component name="masterDetails">
     <states>

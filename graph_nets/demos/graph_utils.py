@@ -14,6 +14,7 @@ import networkx as nx
 import numpy as np
 from scipy import spatial
 import tensorflow as tf
+import random
 
 
 #@title Helper functions  { form-width: "30%" }
@@ -47,7 +48,7 @@ def get_node_dict(graph, attr):
   return {k: v[attr] for k, v in graph.node.items()}
 
 
-def generate_graph(rand,
+def generate_graph_zero(rand,
                    num_nodes_min_max,
                    dimensions=2,
                    theta=1000.0,
@@ -72,7 +73,8 @@ def generate_graph(rand,
     The graph.
   """
   # Sample num_nodes.
-  num_nodes = rand.randint(*num_nodes_min_max)
+  # num_nodes = rand.randint(*num_nodes_min_max)
+  num_nodes = 8
 
   # Create geographic threshold graph.
   pos_array = rand.uniform(size=(num_nodes, dimensions))
@@ -90,7 +92,7 @@ def generate_graph(rand,
   mst_graph = nx.minimum_spanning_tree(mst_graph, weight=DISTANCE_WEIGHT_NAME)
   # Put geo_graph's node attributes into the mst_graph.
   for i in mst_graph.nodes():
-    mst_graph.node[i].update(geo_graph.node[i])
+    mst_graph.nodes[i].update(geo_graph.nodes[i])
 
   # Compose the graphs.
   combined_graph = nx.compose_all((mst_graph, geo_graph.copy()))
@@ -99,6 +101,68 @@ def generate_graph(rand,
     combined_graph.get_edge_data(i, j).setdefault(DISTANCE_WEIGHT_NAME,
                                                   distances[i, j])
   return combined_graph, mst_graph, geo_graph
+
+
+def generate_graph(rand,
+                   num_nodes_min_max,
+                   dimensions=2,
+                   theta=1000.0,
+                   rate=1.0):
+  """Creates a connected graph.
+
+  The graphs are geographic threshold graphs, but with added edges via a
+  minimum spanning tree algorithm, to ensure all nodes are connected.
+
+  Args:
+    rand: A random seed for the graph generator. Default= None.
+    num_nodes_min_max: A sequence [lower, upper) number of nodes per graph.
+    dimensions: (optional) An `int` number of dimensions for the positions.
+      Default= 2.
+    theta: (optional) A `float` threshold parameters for the geographic
+      threshold graph's threshold. Large values (1000+) make mostly trees. Try
+      20-60 for good non-trees. Default=1000.0.
+    rate: (optional) A rate parameter for the node weight exponential sampling
+      distribution. Default= 1.0.
+
+  Returns:
+    The graph.m
+  """
+  # Sample num_nodes.
+  num_nodes = rand.randint(*num_nodes_min_max)
+
+  # Create geographic threshold graph.
+  pos_array = rand.uniform(size=(num_nodes, dimensions))
+  pos = dict(enumerate(pos_array))
+  weight = dict(enumerate(rand.exponential(rate, size=num_nodes)))
+  geo_graph = nx.geographical_threshold_graph(
+    num_nodes, theta, pos=pos, weight=weight)
+
+  dg = nx.generators.directed.gn_graph(num_nodes)
+
+  geo_graph = nx.compose_all([dg.copy(), geo_graph.copy()])
+
+  # Create minimum spanning tree across geo_graph's nodes.
+  distances = spatial.distance.squareform(spatial.distance.pdist(pos_array))
+  i_, j_ = np.meshgrid(range(num_nodes), range(num_nodes), indexing="ij")
+  weighted_edges = list(zip(i_.ravel(), j_.ravel(), distances.ravel()))
+  mst_graph = nx.Graph()
+  mst_graph.add_weighted_edges_from(weighted_edges, weight=DISTANCE_WEIGHT_NAME)
+  mst_graph = nx.minimum_spanning_tree(mst_graph, weight=DISTANCE_WEIGHT_NAME)
+
+  # Put geo_graph's node attributes into the mst_graph.
+  for i in mst_graph.nodes():
+    mst_graph.nodes[i].update(geo_graph.nodes[i])
+
+  # Compose the graphs.
+  combined_graph = nx.compose_all((geo_graph.copy(), mst_graph))
+  # Put all distance weights into edge attributes.
+  for i, j in combined_graph.edges():
+    combined_graph.get_edge_data(i, j).setdefault(DISTANCE_WEIGHT_NAME,
+                                                  distances[i, j])
+  return combined_graph, mst_graph, geo_graph
+
+
+#   return geo_graph, combined_graph, mst_graph
 
 
 def add_shortest_path(rand, graph, min_length=1):
@@ -116,52 +180,43 @@ def add_shortest_path(rand, graph, min_length=1):
   Raises:
     ValueError: All shortest paths are below the minimum length
   """
-  # Map from node pairs to the length of their shortest path.
-  pair_to_length_dict = {}
-  try:
-    # This is for compatibility with older networkx.
-    nx.all_pairs_node_connectivity()
-    lengths = nx.all_pairs_shortest_path_length(graph).items()
-  except AttributeError:
-    # This is for compatibility with newer networkx.
-    lengths = list(nx.all_pairs_shortest_path_length(graph))
-  for x, yy in lengths:
+  node_connected = nx.all_pairs_node_connectivity(graph)
+  #   path = nx.all_simple_paths(graph, 1, 4)
+  paths = []
+  path_nodes = []
+
+  # print
+  #   print("node_connected_list", list(node_connected))
+  # print(type(node_connected))
+
+  i = random.choice(list(node_connected))
+  source = i
+  #   print(i)
+  node_connected_pair = {}
+  node_reachable = []
+  for x, yy in node_connected.items():
     for y, l in yy.items():
-      if l >= min_length:
-        pair_to_length_dict[x, y] = l
-  if max(pair_to_length_dict.values()) < min_length:
-    raise ValueError("All shortest paths are below the minimum length")
-  # The node pairs which exceed the minimum length.
-  node_pairs = list(pair_to_length_dict)
+      if x == i and l > 0:
+        node_connected_pair[x, y] = l
+        path = nx.all_simple_paths(graph, x, y)
+        node_reachable.append(y)
+        for p in list(path):
+          paths.extend(list(pairwise(p)))
 
-  # Computes probabilities per pair, to enforce uniform sampling of each
-  # shortest path lengths.
-  # The counts of pairs per length.
-  counts = collections.Counter(pair_to_length_dict.values())
-  prob_per_length = 1.0 / len(counts)
-  probabilities = [
-      prob_per_length / counts[pair_to_length_dict[x]] for x in node_pairs
-  ]
+  node_pairs = list(node_connected_pair)
+  paths = set(paths)
+  path_nodes = set(path_nodes)
 
-  # Choose the start and end points.
-  i = rand.choice(len(node_pairs), p=probabilities)
-  start, end = node_pairs[i]
-  path = nx.shortest_path(
-      graph, source=start, target=end, weight=DISTANCE_WEIGHT_NAME)
+  digraph = graph
 
-  # Creates a directed graph, to store the directed path from start to end.
-  digraph = graph.to_directed()
-
-  # Add the "start", "end", and "solution" attributes to the nodes and edges.
-  digraph.add_node(start, start=True)
-  digraph.add_node(end, end=True)
-  digraph.add_nodes_from(set_diff(digraph.nodes(), [start]), start=False)
-  digraph.add_nodes_from(set_diff(digraph.nodes(), [end]), end=False)
-  digraph.add_nodes_from(set_diff(digraph.nodes(), path), solution=False)
-  digraph.add_nodes_from(path, solution=True)
-  path_edges = list(pairwise(path))
-  digraph.add_edges_from(set_diff(digraph.edges(), path_edges), solution=False)
-  digraph.add_edges_from(path_edges, solution=True)
+  digraph.add_node(source, source=True)
+  digraph.add_nodes_from(set_diff(digraph.nodes(), [source]), source=False)
+  digraph.add_nodes_from(node_reachable, reachable=True)
+  digraph.add_nodes_from(set_diff(digraph.nodes(), node_reachable), reachable=False)
+  digraph.add_nodes_from(set_diff(digraph.nodes(), path_nodes), solution=False)
+  digraph.add_nodes_from(path_nodes, solution=True)
+  digraph.add_edges_from(set_diff(digraph.edges(), paths), solution=False)
+  digraph.add_edges_from(paths, solution=True)
 
   return digraph
 
@@ -183,7 +238,7 @@ def graph_to_input_target(graph):
   def create_feature(attr, fields):
     return np.hstack([np.array(attr[field], dtype=float) for field in fields])
 
-  input_node_fields = ("pos", "weight", "start", "end")
+  input_node_fields = ("weight", "pos", "source", "reachable")
   input_edge_fields = ("distance",)
   target_node_fields = ("solution",)
   target_edge_fields = ("solution",)
@@ -194,18 +249,18 @@ def graph_to_input_target(graph):
   solution_length = 0
   for node_index, node_feature in graph.nodes(data=True):
     input_graph.add_node(
-        node_index, features=create_feature(node_feature, input_node_fields))
+      node_index, features=create_feature(node_feature, input_node_fields))
     target_node = to_one_hot(
-        create_feature(node_feature, target_node_fields).astype(int), 2)[0]
+      create_feature(node_feature, target_node_fields).astype(int), 2)[0]
     target_graph.add_node(node_index, features=target_node)
     solution_length += int(node_feature["solution"])
   solution_length /= graph.number_of_nodes()
 
-  for receiver, sender, features in graph.edges(data=True):
+  for sender, receiver, features in graph.edges(data=True):
     input_graph.add_edge(
-        sender, receiver, features=create_feature(features, input_edge_fields))
+      sender, receiver, features=create_feature(features, input_edge_fields))
     target_edge = to_one_hot(
-        create_feature(features, target_edge_fields).astype(int), 2)[0]
+      create_feature(features, target_edge_fields).astype(int), 2)[0]
     target_graph.add_edge(sender, receiver, features=target_edge)
 
   input_graph.graph["features"] = np.array([0.0])
